@@ -62,10 +62,7 @@ dependencies {
     // EMI
     modCompileOnly "dev.emi:emi:0.4.0+1.19"
 
-    // Dualwielding
-	modCompileOnly ('com.github.Globox1997:DualWielding:1.19-SNAPSHOT') {
-		exclude(group: "net.fabricmc.fabric-api")
-	}
+    // Dualwielding is outdated
     // PlaceHolder
     modCompileOnly ("eu.pb4:placeholder-api:2.1.1+1.20")
     // Inmis

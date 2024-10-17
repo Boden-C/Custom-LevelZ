@@ -39,11 +39,38 @@ public class PlayerStatsServerPacket {
     public static void init() {
         ServerPlayNetworking.registerGlobalReceiver(STATS_INCREASE_PACKET, (server, player, handler, buffer, sender) -> {
             String skillString = buffer.readString().toUpperCase();
-            int level = buffer.readInt();
+            int requestedLevel = buffer.readInt();
             server.execute(() -> {
+                int level = requestedLevel;
+
                 PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager();
+                Skill skill = Skill.valueOf(skillString);
+                int skillLevel = playerStatsManager.getSkillLevel(skill);
+                int skillPointCost = 0;
+
+                if (skill == Skill.STRENGTH || skill == Skill.DEFENSE) {
+                    // Calculate the possible level and skill point
+                    level = 0;
+                    for (int i = skillLevel; i < Math.min(skillLevel+requestedLevel, ConfigInit.CONFIG.maxLevel); i++) {
+                        if (playerStatsManager.getSkillPoints() >= skillPointCost+Math.max(1, i)) {
+                            level++;
+                            skillPointCost += Math.max(1, i);
+                        } else {
+                            break;
+                        }
+                    }
+                } else {
+                    level = Math.min(playerStatsManager.getSkillPoints(), level);
+                    level = Math.min(ConfigInit.CONFIG.maxLevel - skillLevel, level);
+                    skillPointCost = level;
+                }
+
+                if (ConfigInit.CONFIG.allowHigherSkillLevel) {
+                    level = Math.min(Math.abs(ConfigInit.CONFIG.maxLevel - skillLevel), level);
+                }
+
                 if (playerStatsManager.getSkillPoints() - level >= 0) {
-                    Skill skill = Skill.valueOf(skillString);
+
                     if (!ConfigInit.CONFIG.allowHigherSkillLevel && playerStatsManager.getSkillLevel(skill) >= ConfigInit.CONFIG.maxLevel) {
                         return;
                     }
@@ -52,7 +79,7 @@ public class PlayerStatsServerPacket {
                         CriteriaInit.SKILL_UP.trigger(player, skillString.toLowerCase(), playerStatsManager.getSkillLevel(skill) + level);
                     }
                     playerStatsManager.setSkillLevel(skill, playerStatsManager.getSkillLevel(skill) + level);
-                    playerStatsManager.setSkillPoints(playerStatsManager.getSkillPoints() - level);
+                    playerStatsManager.setSkillPoints(playerStatsManager.getSkillPoints() - skillPointCost);
                     switch (skill) {
                     case HEALTH -> {
                         player.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH)

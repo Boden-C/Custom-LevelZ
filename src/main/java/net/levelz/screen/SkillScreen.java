@@ -98,14 +98,19 @@ public class SkillScreen extends Screen implements Tab {
                 }
                 PlayerStatsClientPacket.writeC2SIncreaseLevelPacket(this.playerStatsManager, Skill.values()[skillInt], level);
             }));
-            this.levelButtons[i].active = playerStatsManager.getSkillPoints() > 0 && this.playerStatsManager.getSkillLevel(Skill.values()[i]) < ConfigInit.CONFIG.maxLevel;
+            // If skill is strength or defense
+            int skillLevel = this.playerStatsManager.getSkillLevel(Skill.values()[i]);
+            this.levelButtons[i].active = skillLevel < ConfigInit.CONFIG.maxLevel &&
+                    (Skill.values()[i] == Skill.STRENGTH || Skill.values()[i] == Skill.DEFENSE
+                            ? playerStatsManager.getSkillPoints() >= Math.max(skillLevel, 1)
+                            : playerStatsManager.getSkillPoints() > 0);
         }
 
         WidgetButtonPage infoButton = this.addDrawableChild(new WidgetButtonPage(this.x + 178, this.y + 73, 11, 13, 0, 42, true, false, Text.translatable("text.levelz.more_info"), button -> {
         }));
         String[] infoTooltip = Text.translatable("text.levelz.gui.level_up_skill.tooltip").getString().split("\n");
-        for (int i = 0; i < infoTooltip.length; i++) {
-            infoButton.addTooltip(Text.of(infoTooltip[i]));
+        for (String s : infoTooltip) {
+            infoButton.addTooltip(Text.of(s));
         }
 
         if (!LevelLists.craftingItemList.isEmpty()) {
@@ -191,7 +196,12 @@ public class SkillScreen extends Screen implements Tab {
 
             boolean skillsAllMaxed = true;
             for (int o = 0; o < this.levelButtons.length; o++) {
-                this.levelButtons[o].active = playerStatsManager.getSkillPoints() > 0 && this.playerStatsManager.getSkillLevel(Skill.values()[o]) < ConfigInit.CONFIG.maxLevel;
+                // If skill is strength or defense
+                int skillLevel = this.playerStatsManager.getSkillLevel(Skill.values()[o]);
+                this.levelButtons[o].active = skillLevel < ConfigInit.CONFIG.maxLevel &&
+                        (Skill.values()[o] == Skill.STRENGTH || Skill.values()[o] == Skill.DEFENSE
+                                ? playerStatsManager.getSkillPoints() >= Math.max(skillLevel, 1)
+                                : playerStatsManager.getSkillPoints() > 0);
                 if (skillsAllMaxed) {
                     skillsAllMaxed = this.playerStatsManager.getSkillLevel(Skill.values()[o]) >= ConfigInit.CONFIG.maxLevel;
                 }

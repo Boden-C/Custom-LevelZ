@@ -149,13 +149,8 @@ public class PlayerStatsClientPacket {
     }
 
     public static void writeC2SIncreaseLevelPacket(PlayerStatsManager playerStatsManager, Skill skill, int level) {
-        int skillLevel = playerStatsManager.getSkillLevel(skill);
-        level = Math.min(playerStatsManager.getSkillPoints(), level);
-        level = Math.min(ConfigInit.CONFIG.maxLevel - skillLevel, level);
+        // Moved level calculation to server side
 
-        if (ConfigInit.CONFIG.allowHigherSkillLevel) {
-            level = Math.min(Math.abs(ConfigInit.CONFIG.maxLevel - skillLevel), level);
-        }
         if (level < 1) {
             return;
         }
