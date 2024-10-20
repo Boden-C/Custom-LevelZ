@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "levelz",
   "version": "${version}",
-  "name": "LevelZ",
+  "name": "Custom LevelZ",
   "description": "Adds player levels",
   "authors": [
     "Globox_Z"
@@ -48,10 +48,6 @@
   },
   "suggests": {},
   "custom": {
-    "mc-publish": {
-      "modrinth": "EFtixeiF",
-      "curseforge": 517130
-    },
     "waila:plugins": {
       "id": "levelz:plugin",
       "environment": "client",

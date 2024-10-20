@@ -149,7 +149,7 @@ public class PlayerStatsClientPacket {
     }
 
     public static void writeC2SIncreaseLevelPacket(PlayerStatsManager playerStatsManager, Skill skill, int level) {
-        // Moved level calculation to server side
+        // CUSTOM Moved level calculation to server side
 
         if (level < 1) {
             return;

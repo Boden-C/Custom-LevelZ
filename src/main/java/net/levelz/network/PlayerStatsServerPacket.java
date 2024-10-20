@@ -41,6 +41,8 @@ public class PlayerStatsServerPacket {
             String skillString = buffer.readString().toUpperCase();
             int requestedLevel = buffer.readInt();
             server.execute(() -> {
+
+                //CUSTOM new server calculation
                 int level = requestedLevel;
 
                 PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager();
@@ -52,9 +54,9 @@ public class PlayerStatsServerPacket {
                     // Calculate the possible level and skill point
                     level = 0;
                     for (int i = skillLevel; i < Math.min(skillLevel+requestedLevel, ConfigInit.CONFIG.maxLevel); i++) {
-                        if (playerStatsManager.getSkillPoints() >= skillPointCost+Math.max(1, i)) {
+                        if (playerStatsManager.getSkillPoints() >= skillPointCost+Math.max(1, i/2)) {
                             level++;
-                            skillPointCost += Math.max(1, i);
+                            skillPointCost += Math.max(1, i/2);
                         } else {
                             break;
                         }

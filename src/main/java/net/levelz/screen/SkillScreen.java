@@ -98,11 +98,11 @@ public class SkillScreen extends Screen implements Tab {
                 }
                 PlayerStatsClientPacket.writeC2SIncreaseLevelPacket(this.playerStatsManager, Skill.values()[skillInt], level);
             }));
-            // If skill is strength or defense
+            // CUSTOM If skill is strength or defense
             int skillLevel = this.playerStatsManager.getSkillLevel(Skill.values()[i]);
             this.levelButtons[i].active = skillLevel < ConfigInit.CONFIG.maxLevel &&
                     (Skill.values()[i] == Skill.STRENGTH || Skill.values()[i] == Skill.DEFENSE
-                            ? playerStatsManager.getSkillPoints() >= Math.max(skillLevel, 1)
+                            ? playerStatsManager.getSkillPoints() >= Math.max(skillLevel/2, 1)
                             : playerStatsManager.getSkillPoints() > 0);
         }
 
@@ -200,7 +200,7 @@ public class SkillScreen extends Screen implements Tab {
                 int skillLevel = this.playerStatsManager.getSkillLevel(Skill.values()[o]);
                 this.levelButtons[o].active = skillLevel < ConfigInit.CONFIG.maxLevel &&
                         (Skill.values()[o] == Skill.STRENGTH || Skill.values()[o] == Skill.DEFENSE
-                                ? playerStatsManager.getSkillPoints() >= Math.max(skillLevel, 1)
+                                ? playerStatsManager.getSkillPoints() >= Math.max(skillLevel/2, 1)
                                 : playerStatsManager.getSkillPoints() > 0);
                 if (skillsAllMaxed) {
                     skillsAllMaxed = this.playerStatsManager.getSkillLevel(Skill.values()[o]) >= ConfigInit.CONFIG.maxLevel;
